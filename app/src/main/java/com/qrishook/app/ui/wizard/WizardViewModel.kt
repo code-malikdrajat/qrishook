@@ -176,12 +176,14 @@ class WizardViewModel @Inject constructor(
                 context = current.dummyContext(),
                 escapeJson = true,
             )
-            val result = webhookClient.send(
-                url = current.url,
-                method = current.method,
-                headers = current.activeHeaders(),
-                body = payload,
-            )
+            val result = runCatching {
+                webhookClient.send(
+                    url = current.url,
+                    method = current.method,
+                    headers = current.activeHeaders(),
+                    body = payload,
+                )
+            }.getOrElse { WebhookResult.NetworkError(it.message ?: "Gagal mengirim") }
             _state.update {
                 it.copy(
                     testState = when (result) {
@@ -214,21 +216,22 @@ class WizardViewModel @Inject constructor(
             _state.update { it.copy(saving = true, saveError = false) }
             runCatching {
                 val trigger = current.toTrigger()
-                val action = Action(
-                    url = current.url.trim(),
+                // URL & headers hanya disimpan di EncryptedSharedPreferences (PRD NFR).
+                val storedAction = Action(
+                    url = "",
                     method = current.method,
-                    headers = current.activeHeaders(),
+                    headers = emptyList(),
                     bodyTemplate = current.bodyTemplate,
                 )
                 val existing = current.automationId?.let { repository.getById(it) }
                 val automation = existing?.copy(
                     name = current.name.trim(),
                     trigger = trigger,
-                    action = action,
+                    action = storedAction,
                 ) ?: Automation(
                     name = current.name.trim(),
                     trigger = trigger,
-                    action = action,
+                    action = storedAction,
                 )
 
                 val id = if (existing == null) {
@@ -237,14 +240,14 @@ class WizardViewModel @Inject constructor(
                     repository.update(automation)
                     automation.id
                 }
-                securePrefs.saveWebhookSecret(id, action.url, action.headers)
+                securePrefs.saveWebhookSecret(id, current.url.trim(), current.activeHeaders())
 
                 val enabled = automation.enabled
                 if (enabled) {
                     if (trigger is Trigger.IntervalTrigger) {
                         IntervalWorker.schedule(context, automation.copy(id = id))
                     }
-                    QRISHookForegroundService.start(context)
+                    runCatching { QRISHookForegroundService.start(context) }
                 }
             }.onSuccess {
                 _state.update { it.copy(saving = false, saved = true) }

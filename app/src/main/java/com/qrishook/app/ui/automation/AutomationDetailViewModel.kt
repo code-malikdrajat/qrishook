@@ -33,7 +33,11 @@ data class DetailStats(
 sealed interface DetailUiState {
     data object Loading : DetailUiState
     data object NotFound : DetailUiState
-    data class Content(val automation: Automation, val stats: DetailStats) : DetailUiState
+    data class Content(
+        val automation: Automation,
+        val stats: DetailStats,
+        val webhookUrl: String,
+    ) : DetailUiState
 }
 
 @HiltViewModel
@@ -62,6 +66,8 @@ class AutomationDetailViewModel @Inject constructor(
                     success = logs.count { it.status == LogStatus.SUCCESS },
                     failed = logs.count { it.status == LogStatus.FAILED },
                 ),
+                webhookUrl = securePrefs.getWebhookSecret(automationId)?.url
+                    ?: automation.action.url,
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DetailUiState.Loading)
@@ -74,7 +80,7 @@ class AutomationDetailViewModel @Inject constructor(
             val automation = currentAutomation() ?: return@launch
             repository.setEnabled(automation.id, enabled)
             if (enabled) {
-                QRISHookForegroundService.start(context)
+                runCatching { QRISHookForegroundService.start(context) }
                 if (automation.trigger is Trigger.IntervalTrigger) {
                     IntervalWorker.schedule(context, automation.copy(enabled = true))
                 }

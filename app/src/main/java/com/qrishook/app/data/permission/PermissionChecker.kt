@@ -44,14 +44,16 @@ class PermissionChecker @Inject constructor(
     }
 
     fun openNotificationAccessSettings() {
-        launchSettings(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+        runCatching { launchSettings(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)) }
     }
 
     fun openAppNotificationSettings() {
-        launchSettings(
-            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName),
-        )
+        runCatching {
+            launchSettings(
+                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName),
+            )
+        }
     }
 
     fun openBatteryOptimizationSettings() {

@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
         // Pastikan service hidup lagi saat app dibuka (mis. setelah proses dimatikan OEM).
         viewModelScope.launch {
             if (repository.getEnabled().isNotEmpty()) {
-                QRISHookForegroundService.start(context)
+                runCatching { QRISHookForegroundService.start(context) }
             }
         }
     }
@@ -65,7 +65,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             repository.setEnabled(automation.id, enabled)
             if (enabled) {
-                QRISHookForegroundService.start(context)
+                runCatching { QRISHookForegroundService.start(context) }
                 if (automation.trigger is Trigger.IntervalTrigger) {
                     IntervalWorker.schedule(context, automation.copy(enabled = true))
                 }

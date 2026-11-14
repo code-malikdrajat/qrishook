@@ -104,7 +104,10 @@ fun AutomationDetailScreen(
                         onToggle = viewModel::setEnabled,
                     )
                     TriggerCard(automation = current.automation)
-                    ActionCard(automation = current.automation)
+                    ActionCard(
+                        method = current.automation.action.method.name,
+                        url = current.webhookUrl,
+                    )
                     StatsCard(state = current)
                     TextButton(onClick = { onOpenLogs(current.automation.id) }) {
                         Text(stringResource(R.string.detail_view_logs))
@@ -188,11 +191,11 @@ private fun TriggerCard(automation: Automation) {
 }
 
 @Composable
-private fun ActionCard(automation: Automation) {
+private fun ActionCard(method: String, url: String) {
     QRISHookCard {
         SectionHeader(stringResource(R.string.detail_action))
-        KeyValueRow(label = stringResource(R.string.detail_method), value = automation.action.method.name)
-        KeyValueRow(label = stringResource(R.string.detail_url), value = automation.action.url)
+        KeyValueRow(label = stringResource(R.string.detail_method), value = method)
+        KeyValueRow(label = stringResource(R.string.detail_url), value = url)
     }
 }
 
