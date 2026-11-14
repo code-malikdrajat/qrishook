@@ -33,42 +33,43 @@ class AutomationExecutor @Inject constructor(
         return sendPayload(automation, payload)
     }
 
-    suspend fun sendPayload(automation: Automation, payload: String): WebhookResult =
+    suspend fun sendPayload(automation: Automation, payload: String): WebhookResult {
+        val result = perform(automation, payload)
+        val now = System.currentTimeMillis()
+        val (status, httpCode, responseSnippet, errorMessage, durationMs) = when (result) {
+            is WebhookResult.Success -> Logged(LogStatus.SUCCESS, result.httpCode, result.body, null, result.durationMs)
+            is WebhookResult.Failed -> Logged(LogStatus.FAILED, result.httpCode, result.body, result.error, null)
+            is WebhookResult.NetworkError -> Logged(LogStatus.QUEUED, null, null, result.message, null)
+        }
+
+        logRepository.insert(
+            ExecutionLog(
+                automationId = automation.id,
+                automationName = automation.name,
+                triggerType = automation.trigger.typeLabel,
+                timestamp = now,
+                status = status,
+                httpCode = httpCode,
+                responseSnippet = responseSnippet,
+                errorMessage = errorMessage,
+                payloadSent = payload,
+                durationMs = durationMs,
+            ),
+        )
+        automationRepository.updateLastRun(automation.id, now, status)
+        return result
+    }
+
+    /** Kirim tanpa menulis log baru — dipakai retry/queue supaya tidak ada log duplikat. */
+    suspend fun perform(automation: Automation, payload: String): WebhookResult =
         withContext(Dispatchers.IO) {
             val secret = securePrefs.getWebhookSecret(automation.id)
             val url = secret?.url?.ifBlank { null } ?: automation.action.url
             val headers = secret?.headers?.takeIf { it.isNotEmpty() } ?: automation.action.headers
 
-            val result = runCatching {
+            runCatching {
                 webhookClient.send(url, automation.action.method, headers, payload)
             }.getOrElse { WebhookResult.NetworkError(it.message ?: "Gagal mengirim") }
-
-            val now = System.currentTimeMillis()
-            val (status, httpCode, responseSnippet, errorMessage, durationMs) = when (result) {
-                is WebhookResult.Success ->
-                    Logged(LogStatus.SUCCESS, result.httpCode, result.body, null, result.durationMs)
-                is WebhookResult.Failed ->
-                    Logged(LogStatus.FAILED, result.httpCode, result.body, result.error, null)
-                is WebhookResult.NetworkError ->
-                    Logged(LogStatus.QUEUED, null, null, result.message, null)
-            }
-
-            logRepository.insert(
-                ExecutionLog(
-                    automationId = automation.id,
-                    automationName = automation.name,
-                    triggerType = automation.trigger.typeLabel,
-                    timestamp = now,
-                    status = status,
-                    httpCode = httpCode,
-                    responseSnippet = responseSnippet,
-                    errorMessage = errorMessage,
-                    payloadSent = payload,
-                    durationMs = durationMs,
-                ),
-            )
-            automationRepository.updateLastRun(automation.id, now, status)
-            result
         }
 
     private data class Logged(

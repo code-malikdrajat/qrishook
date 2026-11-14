@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">QRISHook</string>
+
+    <string name="notif_channel_service">Status Layanan</string>
+    <string name="notif_service_title">QRISHook aktif</string>
+    <string name="notif_service_text">%1$d automation berjalan</string>
 </resources>
