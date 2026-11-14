@@ -3,7 +3,9 @@ package com.qrishook.app.domain.webhook
 import com.qrishook.app.data.model.HttpMethod
 import com.qrishook.app.data.model.KeyValue
 import java.io.IOException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
@@ -13,7 +15,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 /**
  * Satu-satunya jalur HTTP aplikasi. Retry 3x (1s, 2s, 4s) hanya untuk network error dan 5xx.
- * Blocking call dijalankan pada dispatcher pemanggil — panggil dari Dispatchers.IO.
+ * Blocking call dijalankan di Dispatchers.IO — aman dipanggil dari Main.
  */
 class OkHttpWebhookClient(
     private val client: OkHttpClient,
@@ -24,17 +26,20 @@ class OkHttpWebhookClient(
         method: HttpMethod,
         headers: List<KeyValue>,
         body: String,
-    ): WebhookResult {
+    ): WebhookResult = withContext(Dispatchers.IO) {
         var attempt = 0
-        while (true) {
-            val result = executeOnce(url, method, headers, body)
-            val retryable = result is WebhookResult.NetworkError ||
-                (result is WebhookResult.Failed && result.httpCode >= 500)
-            if (!retryable || attempt >= RETRY_DELAYS_MS.size) return result
+        var result = executeOnce(url, method, headers, body)
+        while (isRetryable(result) && attempt < RETRY_DELAYS_MS.size) {
             delay(RETRY_DELAYS_MS[attempt])
             attempt++
+            result = executeOnce(url, method, headers, body)
         }
+        result
     }
+
+    private fun isRetryable(result: WebhookResult): Boolean =
+        result is WebhookResult.NetworkError ||
+            (result is WebhookResult.Failed && result.httpCode >= 500)
 
     private fun executeOnce(
         url: String,

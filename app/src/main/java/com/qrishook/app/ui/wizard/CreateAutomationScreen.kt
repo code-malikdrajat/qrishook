@@ -553,7 +553,7 @@ private fun TestStep(state: WizardUiState, onTest: () -> Unit) {
 
         OutlinedButton(
             onClick = onTest,
-            enabled = state.testState != TestState.Loading,
+            enabled = state.testState != TestState.Loading && state.urlValid,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp),

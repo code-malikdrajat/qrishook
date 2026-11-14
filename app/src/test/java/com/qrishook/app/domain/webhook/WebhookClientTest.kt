@@ -10,6 +10,7 @@ import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.SocketPolicy
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -109,6 +110,29 @@ class WebhookClientTest {
         )
 
         assertEquals("""{"event":"heartbeat"}""", server.takeRequest().body.readUtf8())
+    }
+
+    @Test
+    fun sendRunsOffCallerThread() = runTest {
+        server.enqueue(MockResponse().setResponseCode(200))
+        var callThread = ""
+        val trackingClient = OkHttpWebhookClient(
+            OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    callThread = Thread.currentThread().name
+                    chain.proceed(chain.request())
+                }
+                .build(),
+        )
+
+        trackingClient.send(
+            url = server.url("/hook").toString(),
+            method = HttpMethod.POST,
+            headers = emptyList(),
+            body = "{}",
+        )
+
+        assertNotEquals(Thread.currentThread().name, callThread)
     }
 
     @Test
