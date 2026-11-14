@@ -59,9 +59,10 @@ class LogListViewModel @Inject constructor(
     val automationName: StateFlow<String?> = _automationName
 
     init {
-        val id = automationId ?: return@init
-        viewModelScope.launch {
-            _automationName.value = automationRepository.getById(id)?.name
+        automationId?.let { id ->
+            viewModelScope.launch {
+                _automationName.value = automationRepository.getById(id)?.name
+            }
         }
     }
 
