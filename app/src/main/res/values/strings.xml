@@ -128,6 +128,25 @@
     <string name="wizard_save_confirm_yes">Ya, simpan</string>
     <string name="wizard_save_confirm_no">Test dulu</string>
     <string name="wizard_save_error">Gagal menyimpan automation</string>
+
+    <!-- Automation detail -->
+    <string name="detail_title">Detail Automation</string>
+    <string name="detail_status">Status</string>
+    <string name="detail_enabled">Aktif</string>
+    <string name="detail_disabled">Nonaktif</string>
+    <string name="detail_trigger">Pemicu</string>
+    <string name="detail_action">Tindakan</string>
+    <string name="detail_stats">Statistik</string>
+    <string name="detail_apps">Aplikasi</string>
+    <string name="detail_keywords">Keyword</string>
+    <string name="detail_method">Method</string>
+    <string name="detail_url">URL</string>
+    <string name="detail_last_run">Terakhir jalan</string>
+    <string name="detail_total">Total eksekusi</string>
+    <string name="detail_view_logs">Lihat Log Automation ini</string>
+    <string name="detail_not_found">Automation tidak ditemukan</string>
+    <string name="detail_delete_title">Hapus automation?</string>
+    <string name="detail_delete_message">Hapus automation %1$s? Log terkait tetap disimpan.</string>
     <string-array name="wizard_interval_quick_labels">
         <item>15m</item>
         <item>30m</item>

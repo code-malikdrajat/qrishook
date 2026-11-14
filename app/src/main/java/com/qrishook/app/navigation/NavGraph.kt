@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.qrishook.app.ui.automation.AutomationDetailScreen
 import com.qrishook.app.ui.home.HomeScreen
 import com.qrishook.app.ui.onboarding.OnboardingScreen
 import com.qrishook.app.ui.wizard.CreateAutomationScreen
@@ -61,8 +62,12 @@ fun QRISHookNavGraph(navController: NavHostController = rememberNavController())
         composable(
             route = Routes.AUTOMATION,
             arguments = listOf(navArgument(Routes.AUTOMATION_ARG_ID) { type = NavType.LongType }),
-        ) { entry ->
-            PlaceholderScreen("Screen Automation ${entry.arguments?.getLong(Routes.AUTOMATION_ARG_ID)}")
+        ) {
+            AutomationDetailScreen(
+                onBack = { navController.popBackStack() },
+                onEdit = { navController.navigate(Routes.wizard(it)) },
+                onOpenLogs = { navController.navigate(Routes.logs(it)) },
+            )
         }
 
         composable(
