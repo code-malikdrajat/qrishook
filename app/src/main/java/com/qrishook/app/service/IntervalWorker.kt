@@ -48,9 +48,7 @@ class IntervalWorker @AssistedInject constructor(
         fun uniqueName(automationId: Long) = "interval_$automationId"
 
         fun intervalMinutesOf(trigger: Trigger.IntervalTrigger): Long =
-            trigger.intervalMinutes
-                .coerceAtLeast(Trigger.IntervalTrigger.MIN_INTERVAL_MINUTES)
-                .toLong()
+            trigger.effectiveMinutes.toLong()
 
         fun schedule(context: Context, automation: Automation) {
             val trigger = automation.trigger as? Trigger.IntervalTrigger ?: return

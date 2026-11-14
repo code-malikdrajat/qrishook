@@ -24,6 +24,10 @@ sealed class Trigger {
     ) : Trigger() {
         override val typeLabel: String get() = "Interval"
 
+        /** WorkManager minimum 15 menit. */
+        val effectiveMinutes: Int
+            get() = intervalMinutes.coerceAtLeast(MIN_INTERVAL_MINUTES)
+
         companion object {
             const val MIN_INTERVAL_MINUTES = 15
         }
