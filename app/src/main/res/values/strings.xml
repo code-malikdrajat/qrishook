@@ -2,7 +2,59 @@
 <resources>
     <string name="app_name">QRISHook</string>
 
+    <!-- Service notification -->
     <string name="notif_channel_service">Status Layanan</string>
     <string name="notif_service_title">QRISHook aktif</string>
     <string name="notif_service_text">%1$d automation berjalan</string>
+
+    <!-- Common actions -->
+    <string name="action_open">Buka</string>
+    <string name="action_back">Kembali</string>
+    <string name="action_next">Lanjut</string>
+    <string name="action_cancel">Batal</string>
+    <string name="action_save">Simpan</string>
+    <string name="action_save_enable">Simpan &amp; Aktifkan</string>
+    <string name="action_delete">Hapus</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_retry">Kirim Ulang</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_add_header">+ Tambah header</string>
+    <string name="action_add_keyword">Tambah</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_back">Kembali</string>
+    <string name="cd_toggle_automation">Aktifkan automation %1$s</string>
+    <string name="cd_permission_granted">Izin diberikan</string>
+    <string name="cd_delete_header">Hapus header</string>
+    <string name="cd_logs">Riwayat eksekusi</string>
+    <string name="cd_settings">Pengaturan</string>
+    <string name="cd_edit">Edit automation</string>
+    <string name="cd_delete">Hapus automation</string>
+    <string name="cd_copy_payload">Copy payload</string>
+    <string name="cd_copy_response">Copy response</string>
+    <string name="cd_remove_app">Hapus aplikasi</string>
+    <string name="cd_remove_keyword">Hapus kata kunci</string>
+    <string name="cd_add_keyword">Tambah kata kunci</string>
+
+    <!-- Status -->
+    <string name="status_success">Sukses</string>
+    <string name="status_failed">Gagal</string>
+    <string name="status_queued">Antrian</string>
+
+    <!-- Trigger -->
+    <string name="trigger_notification">Notifikasi</string>
+    <string name="trigger_interval">Interval</string>
+    <string name="trigger_notification_description">Kirim saat notifikasi masuk (mis. transaksi QRIS)</string>
+    <string name="trigger_interval_description">Kirim berkala sebagai heartbeat</string>
+
+    <!-- Automation card / list -->
+    <string name="automation_subtitle_notification">Notifikasi · %1$s</string>
+    <string name="automation_subtitle_interval">Interval · %1$d menit</string>
+    <string name="automation_last_run">Terakhir: %1$s</string>
+    <string name="automation_never_run">Belum pernah jalan</string>
+    <string name="label_all_apps">Semua aplikasi</string>
+
+    <!-- Header row -->
+    <string name="header_key">Key</string>
+    <string name="header_value">Value</string>
 </resources>
