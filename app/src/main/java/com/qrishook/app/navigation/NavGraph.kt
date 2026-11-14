@@ -12,13 +12,30 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.qrishook.app.ui.home.HomeScreen
+import com.qrishook.app.ui.onboarding.OnboardingScreen
 
 @Composable
 fun QRISHookNavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(navController = navController, startDestination = Routes.ONBOARDING) {
-        composable(Routes.ONBOARDING) { PlaceholderScreen("Screen Onboarding") }
+        composable(Routes.ONBOARDING) {
+            OnboardingScreen(
+                onStart = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.ONBOARDING) { inclusive = true }
+                    }
+                },
+            )
+        }
 
-        composable(Routes.HOME) { PlaceholderScreen("Screen Home") }
+        composable(Routes.HOME) {
+            HomeScreen(
+                onCreate = { navController.navigate(Routes.wizard()) },
+                onOpenAutomation = { navController.navigate(Routes.automation(it)) },
+                onOpenLogs = { navController.navigate(Routes.logs()) },
+                onOpenSettings = { navController.navigate(Routes.SETTINGS) },
+            )
+        }
 
         composable(
             route = Routes.WIZARD,

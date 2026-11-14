@@ -57,4 +57,24 @@
     <!-- Header row -->
     <string name="header_key">Key</string>
     <string name="header_value">Value</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Izinkan QRISHook bekerja</string>
+    <string name="onboarding_body">Kami butuh 3 izin agar automation bisa berjalan di background.</string>
+    <string name="permission_notification_access">Akses Notifikasi</string>
+    <string name="permission_notification_access_desc">Membaca notifikasi transaksi yang masuk</string>
+    <string name="permission_post_notifications">Izin Notifikasi</string>
+    <string name="permission_post_notifications_desc">Menampilkan notifikasi status layanan</string>
+    <string name="permission_battery">Bebas Baterai</string>
+    <string name="permission_battery_desc">Agar layanan tidak dimatikan sistem</string>
+    <string name="onboarding_start">Mulai Sekarang</string>
+    <string name="onboarding_skip">Lewati untuk sekarang</string>
+
+    <!-- Home -->
+    <string name="home_fab">Buat Automation</string>
+    <string name="home_empty_title">Belum ada automation</string>
+    <string name="home_empty_description">Yuk buat yang pertama.</string>
+    <string name="home_permission_banner">Izin belum lengkap. Automation mungkin tidak berjalan.</string>
+    <string name="home_toggle_on">Automation diaktifkan</string>
+    <string name="home_toggle_off">Automation dinonaktifkan</string>
 </resources>
