@@ -123,11 +123,19 @@ fun OnboardingScreen(
             Spacer(modifier = Modifier.height(Spacing.sm))
             QRISHookButton(
                 text = stringResource(R.string.onboarding_start),
-                onClick = onStart,
+                onClick = {
+                    viewModel.finishOnboarding()
+                    onStart()
+                },
                 enabled = permissions.allGranted,
                 modifier = Modifier.fillMaxWidth(),
             )
-            TextButton(onClick = onStart) {
+            TextButton(
+                onClick = {
+                    viewModel.finishOnboarding()
+                    onStart()
+                },
+            ) {
                 Text(text = stringResource(R.string.onboarding_skip))
             }
         }

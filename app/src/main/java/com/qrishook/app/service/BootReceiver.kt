@@ -22,7 +22,6 @@ class BootReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val enabled = automationRepository.getEnabled()
-                IntervalWorker.scheduleAll(context, enabled)
                 SyncWorker.schedulePeriodic(context)
                 if (enabled.isNotEmpty()) QRISHookForegroundService.start(context)
             } finally {

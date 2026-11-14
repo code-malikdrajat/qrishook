@@ -30,7 +30,7 @@ app/
      ├─ service/
      │   ├─ NotifListenerService.kt
      │   ├─ ForegroundService.kt
-     │   └─ IntervalWorker.kt
+     │   └─ SyncWorker.kt
      ├─ ui/
      │   ├─ theme/        # Color, Type, Shape, Theme
      │   ├─ components/   # Reusable UI components (lihat UI_SPEC.md section 9)
@@ -58,9 +58,9 @@ app/
 ## Domain Rules (WAJIB)
 - 1 Automation = 1 Trigger + 1 Action
 - `Trigger` = sealed class: `NotificationTrigger | IntervalTrigger`
-- Interval minimum **15 menit** (validate di UI & domain)
+- Interval minimum **5 menit** (validate di UI & domain)
 - Keyword filter = **OR**, case-insensitive
-- Payload WAJIB punya field `event` = `"transaction"` | `"heartbeat"`
+- Payload default mengikuti contoh MacroDroid (`is_heartbeat` / `notif_id`); placeholder bebas dipakai di body template
 - URL/method invalid → **tolak simpan**, tidak boleh runtime error
 - Webhook gagal (non-2xx / exception) → log FAILED, **tidak crash service**
 - Tidak boleh log PII di luar payload yang user lihat

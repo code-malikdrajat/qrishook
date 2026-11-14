@@ -5,9 +5,9 @@ import org.junit.Test
 
 class TriggerTest {
     @Test
-    fun intervalClampsToMinimumFifteenMinutes() {
-        assertEquals(15, Trigger.IntervalTrigger(10).effectiveMinutes)
-        assertEquals(15, Trigger.IntervalTrigger(15).effectiveMinutes)
+    fun intervalClampsToMinimumFiveMinutes() {
+        assertEquals(5, Trigger.IntervalTrigger(1).effectiveMinutes)
+        assertEquals(5, Trigger.IntervalTrigger(5).effectiveMinutes)
     }
 
     @Test
@@ -18,6 +18,6 @@ class TriggerTest {
     @Test
     fun typeLabelsAreStable() {
         assertEquals("Notifikasi", Trigger.NotificationTrigger().typeLabel)
-        assertEquals("Interval", Trigger.IntervalTrigger(15).typeLabel)
+        assertEquals("Interval", Trigger.IntervalTrigger(5).typeLabel)
     }
 }

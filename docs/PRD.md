@@ -25,7 +25,7 @@ sealed class Trigger {
   ) : Trigger()
   
   data class IntervalTrigger(
-    intervalMinutes: Int        // min 15
+    intervalMinutes: Int        // min 5
   ) : Trigger()
 }
 
@@ -55,9 +55,9 @@ ExecutionLog {
    - Step 4: Konfigurasi Webhook
    - Step 5: Test + Simpan
 4. Trigger Notifikasi: multi-select app + filter keyword (OR)
-5. Trigger Interval: input menit (min 15)
+5. Trigger Interval: input menit (min 5)
 6. Action Webhook: URL, method, headers, body template
-7. Placeholder: `{{title}}`, `{{text}}`, `{{app}}`, `{{timestamp}}`, `{{device}}`
+7. Placeholder: `{{title}}`, `{{text}}`, `{{app}}`, `{{timestamp}}`, `{{device}}`, `{{battery}}`, `{{notif_id}}`
 8. Tombol Test (kirim dummy payload, tampilkan response)
 9. Log eksekusi (list, filter status, lihat detail payload & response)
 10. Foreground Service agar listener & worker hidup
@@ -69,20 +69,18 @@ ExecutionLog {
 **Transaksi (trigger notifikasi):**
 ```json
 {
-  "event": "transaction",
   "app": "{{app}}",
-  "title": "{{title}}",
   "text": "{{text}}",
-  "timestamp": "{{timestamp}}"
+  "notif_id": "{{notif_id}}"
 }
 ```
 
 **Heartbeat (trigger interval):**
 ```json
 {
-  "event": "heartbeat",
-  "device": "{{device}}",
-  "timestamp": "{{timestamp}}"
+  "is_heartbeat": true,
+  "battery": {{battery}},
+  "device_name": "HP Android"
 }
 ```
 
@@ -136,7 +134,7 @@ Setiap eksekusi → log
 |---|---|
 | OEM kill background (Xiaomi/Oppo/Vivo) | Onboarding battery optimization + autostart guide |
 | Notif format bank berubah | Selalu kirim `{{text}}` mentah |
-| Interval < 15 menit boros baterai | Min 15 menit, warning UI |
+| Interval < 5 menit boros baterai | Min 5 menit, warning UI |
 | Secret webhook bocor | EncryptedSharedPreferences + mask di UI |
 | Nominal gagal parse | Field `amount` opsional, kosong kalau gagal |
 

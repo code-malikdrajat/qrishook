@@ -51,6 +51,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.qrishook.app.R
 import com.qrishook.app.data.model.HttpMethod
 import com.qrishook.app.domain.execution.PayloadTemplates
+import com.qrishook.app.domain.execution.testContext
 import com.qrishook.app.domain.webhook.TemplateEngine
 import com.qrishook.app.ui.components.HeaderRow
 import com.qrishook.app.ui.components.KeyValueRow
@@ -65,19 +66,28 @@ import com.qrishook.app.ui.components.TriggerOptionCard
 import com.qrishook.app.ui.theme.QRISHookTheme
 import com.qrishook.app.ui.theme.Spacing
 
-private val PLACEHOLDERS = listOf("{{title}}", "{{text}}", "{{app}}", "{{timestamp}}", "{{device}}")
-private val QUICK_INTERVALS = listOf(15, 30, 60, 360, 1440)
+private val PLACEHOLDERS = listOf(
+    "{{title}}",
+    "{{text}}",
+    "{{app}}",
+    "{{timestamp}}",
+    "{{device}}",
+    "{{battery}}",
+    "{{notif_id}}",
+)
+private val QUICK_INTERVALS = listOf(5, 15, 30, 60, 360, 1440)
 
 @Composable
 fun CreateAutomationScreen(
     onBackToHome: () -> Unit,
+    onSaved: (Long, Boolean) -> Unit,
     viewModel: WizardViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showUntestedDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.saved) {
-        if (state.saved) onBackToHome()
+    LaunchedEffect(state.savedAutomationId) {
+        state.savedAutomationId?.let { onSaved(it, state.isEdit) }
     }
 
     val stepTitle = stringResource(
@@ -524,7 +534,7 @@ private fun TestStep(state: WizardUiState, onTest: () -> Unit) {
     )
     val payload = TemplateEngine.render(
         template = state.bodyTemplate,
-        context = state.dummyContext(),
+        context = testContext(),
         escapeJson = true,
     )
 

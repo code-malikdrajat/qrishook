@@ -29,7 +29,7 @@ sealed class Trigger {
             get() = intervalMinutes.coerceAtLeast(MIN_INTERVAL_MINUTES)
 
         companion object {
-            const val MIN_INTERVAL_MINUTES = 15
+            const val MIN_INTERVAL_MINUTES = 5
         }
     }
 }

@@ -15,24 +15,38 @@ import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import com.qrishook.app.MainActivity
 import com.qrishook.app.R
+import com.qrishook.app.data.model.Trigger
 import com.qrishook.app.data.repository.AutomationRepository
+import com.qrishook.app.domain.execution.AutomationExecutor
+import com.qrishook.app.domain.execution.IntervalSchedule
+import com.qrishook.app.util.Battery
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 
-/** Notifikasi persisten selama ada automation aktif. */
+/**
+ * Notifikasi persisten + ticker heartbeat (interval minimum 5 menit).
+ * Dipilih ticker di service (bukan WorkManager) karena periode < 15 menit.
+ */
 @AndroidEntryPoint
 class QRISHookForegroundService : Service() {
 
     @Inject lateinit var automationRepository: AutomationRepository
+    @Inject lateinit var executor: AutomationExecutor
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var observer: Job? = null
+    private var ticker: Job? = null
+    private val tickMutex = Mutex()
 
     override fun onCreate() {
         super.onCreate()
@@ -42,6 +56,7 @@ class QRISHookForegroundService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForegroundWithNotification(0)
+        startTicker()
 
         observer?.cancel()
         observer = scope.launch {
@@ -62,8 +77,42 @@ class QRISHookForegroundService : Service() {
     override fun onDestroy() {
         isRunning = false
         observer?.cancel()
+        ticker?.cancel()
         scope.cancel()
         super.onDestroy()
+    }
+
+    private fun startTicker() {
+        if (ticker?.isActive == true) return
+        ticker = scope.launch {
+            while (isActive) {
+                runCatching { tickDueIntervals() }
+                delay(TICK_INTERVAL_MS)
+            }
+        }
+    }
+
+    private suspend fun tickDueIntervals() {
+        if (!tickMutex.tryLock()) return
+        try {
+            val now = System.currentTimeMillis()
+            val contextMap = mapOf(
+                "device" to Build.MODEL,
+                "device_name" to "HP Android",
+                "timestamp" to Instant.now().toString(),
+                "battery" to Battery.percent(this@QRISHookForegroundService).toString(),
+            )
+            automationRepository.getEnabled()
+                .filter { it.trigger is Trigger.IntervalTrigger }
+                .forEach { automation ->
+                    val trigger = automation.trigger as Trigger.IntervalTrigger
+                    if (IntervalSchedule.isDue(automation.lastRunAt, trigger.effectiveMinutes, now)) {
+                        executor.execute(automation, contextMap)
+                    }
+                }
+        } finally {
+            tickMutex.unlock()
+        }
     }
 
     private fun startForegroundWithNotification(count: Int) {
@@ -114,6 +163,7 @@ class QRISHookForegroundService : Service() {
     companion object {
         private const val CHANNEL_ID = "qrishook_service"
         private const val NOTIFICATION_ID = 1001
+        private const val TICK_INTERVAL_MS = 30_000L
 
         @Volatile
         var isRunning: Boolean = false

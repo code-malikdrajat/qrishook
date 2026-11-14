@@ -2,20 +2,18 @@ package com.qrishook.app.domain.execution
 
 import com.qrishook.app.data.model.Trigger
 
-/** Payload default — PRD section 4. */
+/** Payload default — disamakan dengan contoh MacroDroid pengguna. */
 object PayloadTemplates {
     const val TRANSACTION = """{
-  "event": "transaction",
   "app": "{{app}}",
-  "title": "{{title}}",
   "text": "{{text}}",
-  "timestamp": "{{timestamp}}"
+  "notif_id": "{{notif_id}}"
 }"""
 
     const val HEARTBEAT = """{
-  "event": "heartbeat",
-  "device": "{{device}}",
-  "timestamp": "{{timestamp}}"
+  "is_heartbeat": true,
+  "battery": {{battery}},
+  "device_name": "HP Android"
 }"""
 
     fun defaultFor(trigger: Trigger): String = when (trigger) {

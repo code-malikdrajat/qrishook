@@ -1,12 +1,10 @@
 package com.qrishook.app.ui.wizard
 
-import android.os.Build
 import com.qrishook.app.data.model.HttpMethod
 import com.qrishook.app.data.model.KeyValue
 import com.qrishook.app.data.model.Trigger
 import com.qrishook.app.domain.execution.PayloadTemplates
 import com.qrishook.app.ui.components.TriggerKind
-import java.time.Instant
 
 const val WIZARD_STEP_COUNT = 5
 const val NAME_MAX_LENGTH = 50
@@ -32,7 +30,7 @@ data class WizardUiState(
     val sourceApps: List<String> = emptyList(),
     val keywords: List<String> = emptyList(),
     val keywordInput: String = "",
-    val intervalInput: String = "15",
+    val intervalInput: String = "5",
     val url: String = "",
     val method: HttpMethod = HttpMethod.POST,
     val headers: List<KeyValue> = listOf(KeyValue("Content-Type", "application/json")),
@@ -41,7 +39,7 @@ data class WizardUiState(
     val loadingApps: Boolean = true,
     val testState: TestState = TestState.Idle,
     val saving: Boolean = false,
-    val saved: Boolean = false,
+    val savedAutomationId: Long? = null,
     val saveError: Boolean = false,
 ) {
     val intervalMinutes: Int? get() = intervalInput.toIntOrNull()
@@ -75,12 +73,3 @@ data class WizardUiState(
 
     fun activeHeaders(): List<KeyValue> = headers.filter { it.key.isNotBlank() }
 }
-
-/** Data dummy untuk tombol Test dan preview payload (UI_SPEC 3.5). */
-fun WizardUiState.dummyContext(): Map<String, String> = mapOf(
-    "app" to (sourceApps.firstOrNull() ?: "com.contoh.app"),
-    "title" to "QRIS Diterima",
-    "text" to "Anda menerima Rp 50.000 dari Budi",
-    "device" to Build.MODEL,
-    "timestamp" to Instant.now().toString(),
-)

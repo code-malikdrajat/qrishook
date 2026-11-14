@@ -16,8 +16,11 @@ import com.qrishook.app.ui.settings.SettingsScreen
 import com.qrishook.app.ui.wizard.CreateAutomationScreen
 
 @Composable
-fun QRISHookNavGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController, startDestination = Routes.ONBOARDING) {
+fun QRISHookNavGraph(
+    startDestination: String = Routes.ONBOARDING,
+    navController: NavHostController = rememberNavController(),
+) {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.ONBOARDING) {
             OnboardingScreen(
                 onStart = {
@@ -44,6 +47,10 @@ fun QRISHookNavGraph(navController: NavHostController = rememberNavController())
                     type = NavType.LongType
                     defaultValue = -1L
                 },
+                navArgument(Routes.WIZARD_ARG_STEP) {
+                    type = NavType.IntType
+                    defaultValue = -1
+                },
             ),
         ) {
             CreateAutomationScreen(
@@ -52,6 +59,12 @@ fun QRISHookNavGraph(navController: NavHostController = rememberNavController())
                         navController.navigate(Routes.HOME) {
                             popUpTo(0) { inclusive = true }
                         }
+                    }
+                },
+                onSaved = { id, isEdit ->
+                    navController.popBackStack()
+                    if (!isEdit) {
+                        navController.navigate(Routes.automation(id))
                     }
                 },
             )
@@ -63,8 +76,9 @@ fun QRISHookNavGraph(navController: NavHostController = rememberNavController())
         ) {
             AutomationDetailScreen(
                 onBack = { navController.popBackStack() },
-                onEdit = { navController.navigate(Routes.wizard(it)) },
+                onEdit = { id, step -> navController.navigate(Routes.wizard(id, step)) },
                 onOpenLogs = { navController.navigate(Routes.logs(it)) },
+                onOpenAutomation = { navController.navigate(Routes.automation(it)) },
             )
         }
 

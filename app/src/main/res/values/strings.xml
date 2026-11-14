@@ -29,6 +29,7 @@
     <string name="cd_logs">Riwayat eksekusi</string>
     <string name="cd_settings">Pengaturan</string>
     <string name="cd_edit">Edit automation</string>
+    <string name="cd_duplicate">Duplikat automation</string>
     <string name="cd_delete">Hapus automation</string>
     <string name="cd_copy_payload">Copy payload</string>
     <string name="cd_copy_response">Copy response</string>
@@ -97,7 +98,7 @@
     <string name="wizard_keywords_helper">Kosongkan untuk menerima semua notifikasi</string>
     <string name="wizard_interval_section">Interval</string>
     <string name="wizard_interval_label">Interval (menit)</string>
-    <string name="wizard_interval_error">Minimal 15 menit</string>
+    <string name="wizard_interval_error">Minimal 5 menit</string>
     <string name="wizard_interval_helper">Interval lebih pendek = lebih boros baterai</string>
     <string name="wizard_url_label">URL webhook</string>
     <string name="wizard_url_error">URL harus diawali http:// atau https://</string>
@@ -147,6 +148,7 @@
     <string name="detail_not_found">Automation tidak ditemukan</string>
     <string name="detail_delete_title">Hapus automation?</string>
     <string name="detail_delete_message">Hapus automation %1$s? Log terkait tetap disimpan.</string>
+    <string name="detail_copy_suffix"> (copy)</string>
 
     <!-- Log -->
     <string name="log_title">Riwayat Eksekusi</string>
@@ -178,6 +180,7 @@
     <string name="settings_source_code">Buka source code</string>
     <string name="settings_disclaimer">Aplikasi ini tidak berafiliasi dengan bank atau penyedia e-wallet manapun. Penggunaan sepenuhnya tanggung jawab pengguna.</string>
     <string-array name="wizard_interval_quick_labels">
+        <item>5m</item>
         <item>15m</item>
         <item>30m</item>
         <item>1j</item>

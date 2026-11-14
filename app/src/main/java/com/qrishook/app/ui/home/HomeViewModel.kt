@@ -5,11 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qrishook.app.R
 import com.qrishook.app.data.model.Automation
-import com.qrishook.app.data.model.Trigger
 import com.qrishook.app.data.permission.PermissionChecker
 import com.qrishook.app.data.permission.PermissionState
 import com.qrishook.app.data.repository.AutomationRepository
-import com.qrishook.app.service.IntervalWorker
 import com.qrishook.app.service.QRISHookForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -66,11 +64,6 @@ class HomeViewModel @Inject constructor(
             repository.setEnabled(automation.id, enabled)
             if (enabled) {
                 runCatching { QRISHookForegroundService.start(context) }
-                if (automation.trigger is Trigger.IntervalTrigger) {
-                    IntervalWorker.schedule(context, automation.copy(enabled = true))
-                }
-            } else if (automation.trigger is Trigger.IntervalTrigger) {
-                IntervalWorker.cancel(context, automation.id)
             }
             _messages.send(if (enabled) R.string.home_toggle_on else R.string.home_toggle_off)
         }

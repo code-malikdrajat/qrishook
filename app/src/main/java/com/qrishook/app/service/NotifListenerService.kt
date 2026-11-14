@@ -35,6 +35,11 @@ class NotifListenerService : NotificationListenerService() {
                 ?: extras?.getCharSequence(Notification.EXTRA_BIG_TEXT)
             )?.toString().orEmpty()
         val postedAt = Instant.ofEpochMilli(sbn.postTime).toString()
+        val notifId = "${sbn.id}-${
+            java.time.format.DateTimeFormatter.ofPattern("HHmmss")
+                .withZone(java.time.ZoneId.systemDefault())
+                .format(Instant.ofEpochMilli(sbn.postTime))
+        }"
 
         scope.launch {
             automationRepository.getEnabled()
@@ -49,6 +54,10 @@ class NotifListenerService : NotificationListenerService() {
                                 "title" to title,
                                 "text" to text,
                                 "timestamp" to postedAt,
+                                "device" to android.os.Build.MODEL,
+                                "device_name" to "HP Android",
+                                "battery" to com.qrishook.app.util.Battery.percent(this@NotifListenerService).toString(),
+                                "notif_id" to notifId,
                             ),
                         )
                     }

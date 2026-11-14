@@ -14,13 +14,14 @@ import com.qrishook.app.data.model.Trigger
 import com.qrishook.app.data.prefs.SecurePrefs
 import com.qrishook.app.data.repository.AutomationRepository
 import com.qrishook.app.domain.execution.PayloadTemplates
+import com.qrishook.app.domain.execution.testContext
 import com.qrishook.app.domain.webhook.TemplateEngine
 import com.qrishook.app.domain.webhook.WebhookClient
 import com.qrishook.app.domain.webhook.WebhookResult
 import com.qrishook.app.navigation.Routes
-import com.qrishook.app.service.IntervalWorker
 import com.qrishook.app.service.QRISHookForegroundService
 import com.qrishook.app.ui.components.TriggerKind
+import com.qrishook.app.util.Battery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -45,11 +46,16 @@ class WizardViewModel @Inject constructor(
     private val _state = MutableStateFlow(WizardUiState())
     val state: StateFlow<WizardUiState> = _state.asStateFlow()
 
+    private val startStep: Int = savedStateHandle[Routes.WIZARD_ARG_STEP] ?: -1
+
     init {
         loadInstalledApps()
-        savedStateHandle.get<Long>(Routes.WIZARD_ARG_ID)
-            ?.takeIf { it > 0 }
-            ?.let(::loadAutomation)
+        val editingId = savedStateHandle.get<Long>(Routes.WIZARD_ARG_ID)?.takeIf { it > 0 }
+        if (editingId != null) {
+            loadAutomation(editingId)
+        } else if (startStep in 0 until WIZARD_STEP_COUNT) {
+            _state.update { it.copy(step = startStep) }
+        }
     }
 
     fun next() {
@@ -173,7 +179,7 @@ class WizardViewModel @Inject constructor(
             _state.update { it.copy(testState = TestState.Loading) }
             val payload = TemplateEngine.render(
                 template = current.bodyTemplate,
-                context = current.dummyContext(),
+                context = testContext(Battery.percent(context)),
                 escapeJson = true,
             )
             val result = runCatching {
@@ -214,6 +220,7 @@ class WizardViewModel @Inject constructor(
 
         viewModelScope.launch {
             _state.update { it.copy(saving = true, saveError = false) }
+            var savedId: Long? = null
             runCatching {
                 val trigger = current.toTrigger()
                 // URL & headers hanya disimpan di EncryptedSharedPreferences (PRD NFR).
@@ -240,17 +247,15 @@ class WizardViewModel @Inject constructor(
                     repository.update(automation)
                     automation.id
                 }
+                savedId = id
                 securePrefs.saveWebhookSecret(id, current.url.trim(), current.activeHeaders())
 
                 val enabled = automation.enabled
                 if (enabled) {
-                    if (trigger is Trigger.IntervalTrigger) {
-                        IntervalWorker.schedule(context, automation.copy(id = id))
-                    }
                     runCatching { QRISHookForegroundService.start(context) }
                 }
             }.onSuccess {
-                _state.update { it.copy(saving = false, saved = true) }
+                _state.update { it.copy(saving = false, savedAutomationId = savedId) }
             }.onFailure {
                 _state.update { it.copy(saving = false, saveError = true) }
             }
@@ -264,6 +269,7 @@ class WizardViewModel @Inject constructor(
             val trigger = automation.trigger
             _state.update {
                 it.copy(
+                    step = startStep.takeIf { step -> step in 0 until WIZARD_STEP_COUNT } ?: it.step,
                     automationId = id,
                     isEdit = true,
                     name = automation.name,
@@ -273,7 +279,7 @@ class WizardViewModel @Inject constructor(
                     },
                     sourceApps = (trigger as? Trigger.NotificationTrigger)?.sourceApps.orEmpty(),
                     keywords = (trigger as? Trigger.NotificationTrigger)?.keywords.orEmpty(),
-                    intervalInput = (trigger as? Trigger.IntervalTrigger)?.intervalMinutes?.toString() ?: "15",
+                    intervalInput = (trigger as? Trigger.IntervalTrigger)?.intervalMinutes?.toString() ?: "5",
                     url = secret?.url ?: automation.action.url,
                     method = automation.action.method,
                     headers = secret?.headers ?: automation.action.headers,

@@ -179,8 +179,8 @@ Subtitle:
 
 ### Step 3.3b — Konfigurasi Interval
 - OutlinedTextField numeric
-- FilterChip quick pick: 15m, 30m, 1j, 6j, 24j
-- Validasi: `parsed >= 15` → errorText "Minimal 15 menit"
+- FilterChip quick pick: 5m, 15m, 30m, 1j, 6j, 24j
+- Validasi: `parsed >= 5` → errorText "Minimal 5 menit"
 - Helper "Interval lebih pendek = lebih boros baterai"
 
 ### Step 3.4 — Konfigurasi Webhook

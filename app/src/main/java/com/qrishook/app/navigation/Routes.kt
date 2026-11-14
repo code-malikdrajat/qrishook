@@ -6,11 +6,18 @@ object Routes {
     const val HOME = "home"
     const val SETTINGS = "settings"
 
-    // wizard?automationId={id} — absent id = create, present = edit
+    // wizard?automationId={id}&startStep={n} — absent id = create, present = edit
     const val WIZARD_ARG_ID = "automationId"
-    const val WIZARD = "wizard?$WIZARD_ARG_ID={$WIZARD_ARG_ID}"
-    fun wizard(automationId: Long? = null): String =
-        if (automationId == null) "wizard" else "wizard?$WIZARD_ARG_ID=$automationId"
+    const val WIZARD_ARG_STEP = "startStep"
+    const val WIZARD = "wizard?$WIZARD_ARG_ID={$WIZARD_ARG_ID}&$WIZARD_ARG_STEP={$WIZARD_ARG_STEP}"
+
+    fun wizard(automationId: Long? = null, startStep: Int? = null): String {
+        val params = buildList {
+            if (automationId != null) add("$WIZARD_ARG_ID=$automationId")
+            if (startStep != null) add("$WIZARD_ARG_STEP=$startStep")
+        }
+        return if (params.isEmpty()) "wizard" else "wizard?" + params.joinToString("&")
+    }
 
     const val AUTOMATION_ARG_ID = "id"
     const val AUTOMATION = "automation/{$AUTOMATION_ARG_ID}"

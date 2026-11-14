@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.qrishook.app.R
 import com.qrishook.app.ui.theme.Spacing
 
+/** Baris header ringkas seperti editor MacroDroid: key / value / hapus. */
 @Composable
 fun HeaderRow(
     key: String,
@@ -37,17 +39,23 @@ fun HeaderRow(
         horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        QRISHookTextField(
+        OutlinedTextField(
             value = key,
             onValueChange = onKeyChange,
-            label = stringResource(R.string.header_key),
             modifier = Modifier.weight(1f),
+            placeholder = { Text(stringResource(R.string.header_key)) },
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            shape = MaterialTheme.shapes.small,
         )
-        QRISHookTextField(
+        OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = stringResource(R.string.header_value),
             modifier = Modifier.weight(1f),
+            placeholder = { Text(stringResource(R.string.header_value)) },
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            shape = MaterialTheme.shapes.small,
         )
         IconButton(onClick = onDelete) {
             Icon(
@@ -62,8 +70,8 @@ fun HeaderRow(
 @Preview(showBackground = true)
 @Composable
 private fun HeaderRowPreview() {
-    var key by remember { mutableStateOf("Content-Type") }
-    var value by remember { mutableStateOf("application/json") }
+    var key by remember { mutableStateOf("x-secret-token") }
+    var value by remember { mutableStateOf("sec_xxx") }
     MaterialTheme {
         HeaderRow(
             key = key,
