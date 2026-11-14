@@ -17,6 +17,8 @@ securityCrypto = "1.1.0-alpha06"
 workManager = "2.9.1"
 junit = "4.13.2"
 androidxTestExtJunit = "1.2.1"
+androidxTestCore = "1.6.1"
+androidxTestRunner = "1.6.2"
 espresso = "3.6.1"
 
 [libraries]
@@ -50,6 +52,8 @@ androidx-security-crypto = { group = "androidx.security", name = "security-crypt
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
+androidx-test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "androidxTestCore" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
 
 [plugins]
