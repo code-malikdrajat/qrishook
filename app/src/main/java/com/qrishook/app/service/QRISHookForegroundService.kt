@@ -36,6 +36,7 @@ class QRISHookForegroundService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        isRunning = true
         createChannel()
     }
 
@@ -59,6 +60,7 @@ class QRISHookForegroundService : Service() {
     override fun onBind(intent: Intent?) = null
 
     override fun onDestroy() {
+        isRunning = false
         observer?.cancel()
         scope.cancel()
         super.onDestroy()
@@ -112,6 +114,10 @@ class QRISHookForegroundService : Service() {
     companion object {
         private const val CHANNEL_ID = "qrishook_service"
         private const val NOTIFICATION_ID = 1001
+
+        @Volatile
+        var isRunning: Boolean = false
+            private set
 
         fun start(context: Context) {
             ContextCompat.startForegroundService(

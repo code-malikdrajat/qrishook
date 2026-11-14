@@ -147,6 +147,36 @@
     <string name="detail_not_found">Automation tidak ditemukan</string>
     <string name="detail_delete_title">Hapus automation?</string>
     <string name="detail_delete_message">Hapus automation %1$s? Log terkait tetap disimpan.</string>
+
+    <!-- Log -->
+    <string name="log_title">Riwayat Eksekusi</string>
+    <string name="log_title_automation">Log: %1$s</string>
+    <string name="filter_all">Semua</string>
+    <string name="log_empty_title">Belum ada riwayat</string>
+    <string name="log_empty_description">Eksekusi automation akan muncul di sini.</string>
+    <string name="log_empty_filtered">Tidak ada log untuk filter ini</string>
+    <string name="log_detail_title">Detail Eksekusi</string>
+    <string name="log_not_found">Log tidak ditemukan</string>
+    <string name="log_info_section">Info</string>
+    <string name="log_trigger">Pemicu</string>
+    <string name="log_http">HTTP</string>
+    <string name="log_duration">Durasi</string>
+    <string name="log_error">Error</string>
+    <string name="log_payload">Payload</string>
+    <string name="log_response">Response</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_permissions">Izin</string>
+    <string name="settings_troubleshooting">Troubleshooting</string>
+    <string name="settings_about">Tentang</string>
+    <string name="settings_service_check">Cek service berjalan</string>
+    <string name="settings_service_running">Berjalan</string>
+    <string name="settings_service_stopped">Tidak berjalan</string>
+    <string name="settings_oem_guide">Panduan OEM (Xiaomi, Oppo, dst)</string>
+    <string name="settings_version">Versi</string>
+    <string name="settings_source_code">Buka source code</string>
+    <string name="settings_disclaimer">Aplikasi ini tidak berafiliasi dengan bank atau penyedia e-wallet manapun. Penggunaan sepenuhnya tanggung jawab pengguna.</string>
     <string-array name="wizard_interval_quick_labels">
         <item>15m</item>
         <item>30m</item>

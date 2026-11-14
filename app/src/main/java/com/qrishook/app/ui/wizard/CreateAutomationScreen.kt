@@ -50,7 +50,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.qrishook.app.R
 import com.qrishook.app.data.model.HttpMethod
-import com.qrishook.app.data.model.Trigger
 import com.qrishook.app.domain.execution.PayloadTemplates
 import com.qrishook.app.domain.webhook.TemplateEngine
 import com.qrishook.app.ui.components.HeaderRow

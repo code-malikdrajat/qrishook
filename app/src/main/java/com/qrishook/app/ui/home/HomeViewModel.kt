@@ -46,6 +46,15 @@ class HomeViewModel @Inject constructor(
     private val _messages = Channel<Int>(Channel.BUFFERED)
     val messages = _messages.receiveAsFlow()
 
+    init {
+        // Pastikan service hidup lagi saat app dibuka (mis. setelah proses dimatikan OEM).
+        viewModelScope.launch {
+            if (repository.getEnabled().isNotEmpty()) {
+                QRISHookForegroundService.start(context)
+            }
+        }
+    }
+
     fun refreshPermissions() {
         _permissions.value = permissionChecker.state()
     }
