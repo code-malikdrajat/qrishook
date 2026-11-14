@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.qrishook.app.ui.home.HomeScreen
 import com.qrishook.app.ui.onboarding.OnboardingScreen
+import com.qrishook.app.ui.wizard.CreateAutomationScreen
 
 @Composable
 fun QRISHookNavGraph(navController: NavHostController = rememberNavController()) {
@@ -45,9 +46,16 @@ fun QRISHookNavGraph(navController: NavHostController = rememberNavController())
                     defaultValue = -1L
                 },
             ),
-        ) { entry ->
-            val id = entry.arguments?.getLong(Routes.WIZARD_ARG_ID)?.takeIf { it > 0 }
-            PlaceholderScreen(if (id == null) "Screen Wizard (Buat)" else "Screen Wizard (Edit $id)")
+        ) {
+            CreateAutomationScreen(
+                onBackToHome = {
+                    if (!navController.popBackStack()) {
+                        navController.navigate(Routes.HOME) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                },
+            )
         }
 
         composable(

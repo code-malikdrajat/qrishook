@@ -77,4 +77,62 @@
     <string name="home_permission_banner">Izin belum lengkap. Automation mungkin tidak berjalan.</string>
     <string name="home_toggle_on">Automation diaktifkan</string>
     <string name="home_toggle_off">Automation dinonaktifkan</string>
+
+    <!-- Wizard -->
+    <string name="wizard_title">Buat Automation Baru</string>
+    <string name="wizard_title_edit">Edit Automation</string>
+    <string name="wizard_step_label">Step %1$d dari 5 · %2$s</string>
+    <string name="wizard_step_name">Nama</string>
+    <string name="wizard_step_trigger">Pemicu</string>
+    <string name="wizard_step_config">Konfigurasi</string>
+    <string name="wizard_step_webhook">Webhook</string>
+    <string name="wizard_step_test">Test &amp; Simpan</string>
+    <string name="wizard_name_question">Apa nama automation ini?</string>
+    <string name="wizard_name_label">Nama automation</string>
+    <string name="wizard_name_counter">%1$d/50</string>
+    <string name="wizard_apps_section">Aplikasi sumber</string>
+    <string name="wizard_apps_helper">Kosongkan untuk semua aplikasi</string>
+    <string name="wizard_keywords_section">Filter kata kunci</string>
+    <string name="wizard_keyword_label">Kata kunci</string>
+    <string name="wizard_keywords_helper">Kosongkan untuk menerima semua notifikasi</string>
+    <string name="wizard_interval_section">Interval</string>
+    <string name="wizard_interval_label">Interval (menit)</string>
+    <string name="wizard_interval_error">Minimal 15 menit</string>
+    <string name="wizard_interval_helper">Interval lebih pendek = lebih boros baterai</string>
+    <string name="wizard_url_label">URL webhook</string>
+    <string name="wizard_url_error">URL harus diawali http:// atau https://</string>
+    <string name="wizard_url_helper">Contoh: https://webhook.site/xxxx</string>
+    <string name="wizard_method_section">Method</string>
+    <string name="wizard_headers_section">Headers</string>
+    <string name="wizard_body_label">Body template (JSON)</string>
+    <string name="wizard_body_label_get">Query template</string>
+    <string name="wizard_body_helper">Untuk GET, isi dengan format query: event=heartbeat&amp;device=…</string>
+    <string name="wizard_placeholders">Placeholder</string>
+    <string name="wizard_placeholders_helper">Ketuk untuk menambahkan ke akhir template.</string>
+    <string name="wizard_summary_section">Ringkasan</string>
+    <string name="wizard_summary_name">Nama</string>
+    <string name="wizard_summary_trigger">Pemicu</string>
+    <string name="wizard_summary_keywords">Keyword</string>
+    <string name="wizard_summary_webhook">Webhook</string>
+    <string name="wizard_summary_headers">Headers</string>
+    <string name="wizard_summary_header_count">%1$d header</string>
+    <string name="wizard_summary_none">—</string>
+    <string name="wizard_test_now">Test Sekarang</string>
+    <string name="wizard_test_idle">Belum ada test</string>
+    <string name="wizard_test_success">Berhasil (%1$d) · %2$dms</string>
+    <string name="wizard_test_failed">Gagal (%1$s)</string>
+    <string name="wizard_test_network">Gagal terhubung</string>
+    <string name="wizard_payload_preview">Payload yang akan dikirim</string>
+    <string name="wizard_save_confirm_title">Belum dites</string>
+    <string name="wizard_save_confirm_text">Webhook belum dites. Tetap simpan?</string>
+    <string name="wizard_save_confirm_yes">Ya, simpan</string>
+    <string name="wizard_save_confirm_no">Test dulu</string>
+    <string name="wizard_save_error">Gagal menyimpan automation</string>
+    <string-array name="wizard_interval_quick_labels">
+        <item>15m</item>
+        <item>30m</item>
+        <item>1j</item>
+        <item>6j</item>
+        <item>24j</item>
+    </string-array>
 </resources>
